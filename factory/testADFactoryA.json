@@ -1,0 +1,9 @@
+{
+	"name": "testADFactoryA",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "868d94a8-c875-430a-926c-d832e7b963d2",
+		"tenantId": "5e19ae3a-bdee-4aa5-8161-b6ab0bc98857"
+	}
+}
