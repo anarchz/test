@@ -1,0 +1,21 @@
+{
+	"name": "HTTP_csvFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HTTP_gitHub",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "themes.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
