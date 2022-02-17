@@ -7,7 +7,7 @@
 				"type": "AzureFunctionActivity",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "7.00:00:00",
+					"timeout": "0.01:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"functionName": "HttpExample",
-					"method": "GET",
+					"method": "POST",
 					"headers": {
 						"path": "https://github.com/anarchz/test/blob/master/resources/themes.csv"
 					}
