@@ -1,0 +1,189 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "testADFactoryA"
+		},
+		"ABS_linkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ABS_linkedService'"
+		},
+		"HTTP_gitHub_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HTTP_gitHub'"
+		},
+		"Test_Connect_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'Test_Connect'"
+		},
+		"HTTP_gitHub_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://github.com/anarchz/test/tree/master/resources/"
+		},
+		"HTTP_gitHub_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "anarchz"
+		},
+		"Test_Connect_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://app-azure-function-examples-220216153226.azurewebsites.net"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ABS_linkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked Service for Azure blob storage",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ABS_linkedService_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HTTP_gitHub')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked service to gitHub",
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HTTP_gitHub_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('HTTP_gitHub_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('HTTP_gitHub_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Test_Connect')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Test connection ",
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('Test_Connect_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('Test_Connect_functionKey')]"
+					},
+					"authentication": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ConnectToGit",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.01:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "HttpExample",
+							"method": "GET",
+							"headers": {
+								"path": "https://github.com/anarchz/test/blob/master/resources/themes.csv"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "Test_Connect",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Test_Connect')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ABS_csvFiles')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ABS_linkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "newthemes",
+						"folderPath": "git",
+						"container": "test"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ABS_linkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HTTP_csvFiles')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HTTP_gitHub",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "themes.csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HTTP_gitHub')]"
+			]
+		}
+	]
+}

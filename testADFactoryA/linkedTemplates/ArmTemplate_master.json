@@ -1,0 +1,84 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "testADFactoryA"
+		},
+		"ABS_linkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ABS_linkedService'"
+		},
+		"HTTP_gitHub_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HTTP_gitHub'"
+		},
+		"Test_Connect_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'Test_Connect'"
+		},
+		"HTTP_gitHub_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://github.com/anarchz/test/tree/master/resources/"
+		},
+		"HTTP_gitHub_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "anarchz"
+		},
+		"Test_Connect_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://app-azure-function-examples-220216153226.azurewebsites.net"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "testADFactoryA_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ABS_linkedService_connectionString": {
+						"value": "[parameters('ABS_linkedService_connectionString')]"
+					},
+					"HTTP_gitHub_password": {
+						"value": "[parameters('HTTP_gitHub_password')]"
+					},
+					"Test_Connect_functionKey": {
+						"value": "[parameters('Test_Connect_functionKey')]"
+					},
+					"HTTP_gitHub_properties_typeProperties_url": {
+						"value": "[parameters('HTTP_gitHub_properties_typeProperties_url')]"
+					},
+					"HTTP_gitHub_properties_typeProperties_userName": {
+						"value": "[parameters('HTTP_gitHub_properties_typeProperties_userName')]"
+					},
+					"Test_Connect_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('Test_Connect_properties_typeProperties_functionAppUrl')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

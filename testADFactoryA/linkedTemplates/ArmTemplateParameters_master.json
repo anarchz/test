@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "testADFactoryA"
+		},
+		"ABS_linkedService_connectionString": {
+			"value": ""
+		},
+		"HTTP_gitHub_password": {
+			"value": ""
+		},
+		"Test_Connect_functionKey": {
+			"value": ""
+		},
+		"HTTP_gitHub_properties_typeProperties_url": {
+			"value": "https://github.com/anarchz/test/tree/master/resources/"
+		},
+		"HTTP_gitHub_properties_typeProperties_userName": {
+			"value": "anarchz"
+		},
+		"Test_Connect_properties_typeProperties_functionAppUrl": {
+			"value": "https://app-azure-function-examples-220216153226.azurewebsites.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
