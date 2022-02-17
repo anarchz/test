@@ -16,7 +16,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"functionName": "HttpExample",
-					"method": "GET"
+					"method": "POST",
+					"body": {
+						"path": "https://github.com/anarchz/test/blob/master/resources/themes.csv"
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "Test_Connect",
