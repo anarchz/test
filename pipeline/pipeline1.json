@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"functionName": "HttpExample",
-					"method": "POST",
+					"method": "GET",
 					"headers": {
 						"path": "https://github.com/anarchz/test/blob/master/resources/themes.csv"
 					}
